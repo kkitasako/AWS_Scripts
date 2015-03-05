@@ -20,9 +20,12 @@ METRIC_NAME=$2
 STATISTICS=$3
 
 # Set START_TIME as 1min before
-START_TIME=`date -u -v-2M "+%Y-%m-%dT%H:%M:00"`
-END_TIME=`date -u "+%Y-%m-%dT%H:%M:3"`
+START_TIME=`date -u --date "2 minute ago" +"%FT%H:%M:00"`
+END_TIME=`date -u +"%FT%H:%M:00"`
 PERIOD=60
+
+# Set Region
+REGION="ap-northeast-1"
 
 #-----------------------------------------------
 # Execute AWS CLI Command
@@ -30,5 +33,5 @@ PERIOD=60
 #  Get only statistics Value
 #-----------------------------------------------
 
-aws cloudwatch get-metric-statistics --namespace $NAMESPACE --metric-name $METRIC_NAME --start-time $START_TIME --end-time $END_TIME --period $PERIOD --statistics $STATISTICS | grep DATAPOINTS | awk '{print $2}' | head -n 1
+aws cloudwatch get-metric-statistics --region $REGION --namespace $NAMESPACE --metric-name $METRIC_NAME --start-time $START_TIME --end-time $END_TIME --period $PERIOD --statistics $STATISTICS | grep $STATISTICS | awk '{print $2}' | head -n 1 | sed -e "s/,//g"
 
