@@ -27,6 +27,9 @@ exports.handler = function(event, context) {
 	var transcode_type = input_key.split('/')[0];
 	var input_filename = input_key.substring(input_key.lastIndexOf('/')+1, input_key.length).split('.')[0];
 	console.log('Transcode Type: ' + transcode_type);
+	// Create Time
+	var date = new Date()
+	var create_time = date.getFullYear() + '/' + eval(date.getMonth()+1)  + '/' + date.getDate() + ' ' + date.toLocaleTimeString();
 	// Create Output File Name from Unix Time
 	var output_filename = (Math.floor( new Date().getTime() / 1000 )).toString();
 	console.log('Input Filename: ' + input_filename + ' / Output Filename:  ' +output_filename);
@@ -73,7 +76,10 @@ exports.handler = function(event, context) {
 						Name: output_filename + '_main',
 						OutputKeys: [output_filename]
 					}
-				]
+				],
+				UserMetadata: {
+					cid: output_filename
+				}
 			};
 			// Set contents & img access URL
 			contents_url = contents_url + 'hls/' + output_filename + '/' + output_filename  + '_main.m3u8';
@@ -110,7 +116,10 @@ exports.handler = function(event, context) {
 							Method: 'aes-128'
 						}
 					}
-				]
+				],
+				UserMetadata: {
+					cid: output_filename
+				}
 			};
 			// Set contents & image access URL
 			contents_url = contents_url + 'hlsAES/' + output_filename + '/' + output_filename  +  '_main.m3u8';
@@ -135,6 +144,9 @@ exports.handler = function(event, context) {
 					PresetId: presetId,
     				ThumbnailPattern: output_filename +'-img-{count}',
 					Rotate: 'auto'
+				},
+				UserMetadata: {
+					cid: output_filename
 				}
 			};
 			// Set contents & image access URL
@@ -165,7 +177,8 @@ exports.handler = function(event, context) {
 			cid: {S: output_filename},
 			contents_url: {S: contents_url},
 			image_url: {S: img_url},
-			status: {S: 'Transcoding'}
+			status: {S: 'TRANSCODING'},
+			last_modified: {S: create_time}
 		},
 		TableName: 'media-workflow-contents-tbl'
 	};
