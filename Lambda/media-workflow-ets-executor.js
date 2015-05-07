@@ -47,6 +47,9 @@ exports.handler = function(event, context) {
 	var contents_url = 'http://mediacdn.aws-jp.com/';
 	var img_url = contents_url;
 	
+	// Contents Type (Normal / Secure)
+	var contents_type = '';
+	
 	// Decide Transcode type to create elastic transcoder  parameter
 	switch (transcode_type) {
 		// HLS Format
@@ -84,6 +87,7 @@ exports.handler = function(event, context) {
 			// Set contents & img access URL
 			contents_url = contents_url + 'hls/' + output_filename + '/' + output_filename  + '_main.m3u8';
 			img_url = img_url + 'hls/' + output_filename + '/' + output_filename  + '-img-00002.png';
+			contents_type = 'NORMAL';
 			break;
 		// HLS with AES Encryption Format
 		case 'hlsAES' :
@@ -124,6 +128,7 @@ exports.handler = function(event, context) {
 			// Set contents & image access URL
 			contents_url = contents_url + 'hlsAES/' + output_filename + '/' + output_filename  +  '_main.m3u8';
 			img_url = img_url + 'hlsAES/' + output_filename + '/' + output_filename  + '-img-00002.png';
+			contents_type = 'SECURE';
 			break;
 		// MP4 format
 		case 'mp4':
@@ -152,6 +157,7 @@ exports.handler = function(event, context) {
 			// Set contents & image access URL
 			contents_url = contents_url + 'mp4/' + output_filename +  '/' + output_filename  + '.mp4';
 			img_url = img_url + 'mp4/' + output_filename + '/' + output_filename  + '-img-00002.png';
+			contents_type = 'NORMAL';
 			break;
 		// Other or Unknown
 		default:
@@ -178,6 +184,7 @@ exports.handler = function(event, context) {
 			contents_url: {S: contents_url},
 			image_url: {S: img_url},
 			status: {S: 'TRANSCODING'},
+			type: {S: contents_type},
 			last_modified: {S: create_time}
 		},
 		TableName: 'media-workflow-contents-tbl'
