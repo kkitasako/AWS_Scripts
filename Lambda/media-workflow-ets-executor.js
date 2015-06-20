@@ -17,7 +17,7 @@ exports.handler = function(event, context) {
 	// Media-Workflow ETS Pipeline ID
 	var pipelineId= '1430389745074-iavo69'; 
 	// Transcode Preset Map
-	var preset_map = {hls:'1430400493292-6ie7ib', hlsAES:'1430400493292-6ie7ib', mp4: '1430400578156-laf7zb'};
+	var preset_map = {hls:'1431923713371-t8xdna', hlsAES:'1431923713371-t8xdna', mp4: '1431923814202-hepz47'};
 	
 	// Get S3 Bucket Name
 	var bucket = event.Records[0].s3.bucket.name;
@@ -81,7 +81,8 @@ exports.handler = function(event, context) {
 					}
 				],
 				UserMetadata: {
-					cid: output_filename
+					cid: output_filename,
+					m3u8: 'hls/' + output_filename + '/' + output_filename  + '_main.m3u8'
 				}
 			};
 			// Set contents & img access URL
@@ -123,6 +124,8 @@ exports.handler = function(event, context) {
 				],
 				UserMetadata: {
 					cid: output_filename
+					m3u8: 'hls/' + output_filename + '/' + output_filename  + '_main.m3u8'
+					m3u8: 'hls/' + output_filename + '/' + output_filename  + '.key'
 				}
 			};
 			// Set contents & image access URL
